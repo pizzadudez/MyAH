@@ -1,0 +1,24 @@
+Sample json data for an auction from Blizz API:
+
+{
+    "auc":1237649966,
+    "item":152505,
+    "owner":"Hyaenodon",
+    "ownerRealm":"Drak'thul",
+    "bid":16340000,
+    "buyout":17200000,
+    "quantity":200,
+    "timeLeft":"LONG",
+    "rand":0,
+    "seed":0,
+    "context":0
+},
+
+fields needed:
+    auc, (auc_id used to indentify an auction)
+    item,
+    owner,
+    ownerRealm,
+    buyout,
+    quantity,
+    timeLeft

@@ -1,0 +1,59 @@
+What's the porpose of MyAH?
+
+1. Prices Overview Summary - View auction entries in a table (like in game)
+    - 1 table per realm, multiple tables will be adjacent to eachother to create a 'mega-table' for easier comparison and View
+    - each realm table has a maximum ammount of entries/rows (50 or so)
+    - the most important column of is 'PRICE'
+    - other data (stackNum, stackSize, timeLeft, owner, isMine) will be available by [ownColumn, denotedByColor, availableByHoverTooltip]
+    - there will be some logic and css/js to facilitate making decisions based on this tabular data like:
+        - order by: 
+            - min_price(will be determined by something like: median of cheapest 50 stacks)
+            - acc0/acc5
+            - has auctions posted
+            - most profitable to least profitable
+            - ...
+    - by default tables will be vertical but it might be a good idea to implement horizontal view aswell if there are too many servers
+    - there should be an option to group up small size auction entries with simillar prices
+
+
+2. MyAuctions Overview - View auctions of my own sellers (equivalent to excel - What I have on the AH right now table)
+    - show current auctions based on the most recent json snapshot from Blizz
+    - if the auction is undercut 
+        - logic that determines if I should repost or not (undercut by 40 stacks at -1c vs undercut by 3 groups of 1-3 auctions at -1c or higher)
+
+
+3. Notification Area
+    - This Page shows a number of notifications for all realms:
+        - price spike: when min_median price spikes over a threshold (someone is hiking up prices) - take advantage fast!
+        - price ok: when price has been under my min_median but now is over it (but didn't suddenly spike)
+        - large ammount sold - need restock
+        - undercut - my auctions got undercut and it's a good idea to repost right now
+            - useful feature for high trafic days when i post at 8pm and at 10 i want to repost where needed
+    - color code notifications and be able to sort:
+        - ex: only show undercut notifications and restock when im reposting 
+    - able to separate between acc0/acc5 and create an order to login by priority of each realm
+        - maybe even export lua file or something for easier navigation in game
+
+
+4. Historical Data Analysis
+    - Tabular view but also individual realm/seller pages
+    - Develop logic to determine if auction with specific auc_id was sold or reposted
+
+
+5. Seller Profiles - Competitors (other than my own):
+    - have a link to armory or get data from blizz api
+    - if I wish, make a profile for this seller simillar to my own sellers
+    - competitors will be denoted in the main tabular view by it's own color or color for all competitors
+
+
+6. User Profile
+    - Modify user settings (for now just me)
+        - list of realms
+        - realm order/priority
+        - list of items to monitor
+        - what items to monitor on specific realms
+        - minimum prices to notify
+
+7. App for farming group selection
+    - store string of farming groups that can be accessed by hkn tool script directly to create necessary HKN and LUA files
+

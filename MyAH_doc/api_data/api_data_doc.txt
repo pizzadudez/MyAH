@@ -1,0 +1,37 @@
+def init_update():
+    for realm in realms:
+        if need to update:
+            worker()
+
+    join workers;
+    load pickles;
+    write_output();
+
+def worker():
+    get json dump;
+    dump json in sql;
+    create cluster list of relevant auctions;
+    pickle cluster list on disk;
+
+def write_output():
+    write lua file;
+    write model db for django - from in memory dict of pickl'd data;
+        rename current db as backup
+        create new db
+
+
+def cont_update();
+    while True:
+        if update available:
+            spawn workers;
+            join workers;
+            load updated pickles
+            write_output()
+        elif update soon:
+            sleep 10s
+        else: 
+        # long time for next update 
+        # sleep deep until a few 10s of seconds before the update
+            sleep for next_update - now() - 1 min
+
+

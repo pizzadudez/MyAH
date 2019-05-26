@@ -1,0 +1,65 @@
+REALM SETTINGS
+realms:
+    name - pk
+    slug
+    code
+    region
+    seller
+    json_link
+    last_update
+
+
+ITEM SETTINGS
+items:
+    item_id - pk
+    name
+    short_name
+    category_id - fk
+
+item_categories:
+    category_id - pk
+    name
+
+stack_sizes:
+    category_id - fk
+    size
+
+API DATA DUMP per realm
+auctions:
+    auc_id - pk
+    item_id
+    owner
+    buyout
+    stack_size
+    time_left
+
+CONCAT AND SORTED DATA - in memory duplicate
+{
+    [realm_data] = [
+        {
+            item_id
+                        quantity
+            price
+            stack_size
+            owner
+            time_left
+            auc_ids = [id1, id2, id3]
+        }
+    ]
+}
+
+CONCAT AND SORTED DATA - final db, model for django
+auction_chunks:
+    cluster_id - pk
+    realm 
+    item_id
+    owner
+    price
+    stack_size
+    time_left
+
+auction_ids:
+    auc_id - not pk, could be duplicate when we join all realms
+    cluster_id - fk
+
+

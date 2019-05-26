@@ -1,0 +1,14 @@
+{% for realm, realm_data in auc_data.items %}
+<div>
+    <p><strong>{{ realm }}</strong></p>
+    <table>     
+        {% for auc in realm_data %}
+        <tr>
+            {% for field in auc %}
+            <td>{{ field }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endfor %}

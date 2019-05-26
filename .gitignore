@@ -1,0 +1,5 @@
+external_dbs
+main/__pycache__
+main/migrations
+myah/__pycache__
+db.sqlite3
