@@ -1,14 +1,25 @@
-{% for realm, realm_data in auc_data.items %}
-<div>
-    <p><strong>{{ realm }}</strong></p>
-    <table>     
-        {% for auc in realm_data %}
-        <tr>
-            {% for field in auc %}
-            <td>{{ field }}</td>
+{% extends 'main/base.html' %}
+
+{% block content %}
+    {% for realm, realm_data in auc_data.items %}
+    <div class="row" style="margin-bottom:5px;">
+        <div class="col" style="width:45px;">
+            <p><strong>{{ realm_data.1 }}</strong></p>
+        </div>
+        <div class="col">
+            <table class="highlight mytable">     
+            {% for auc in realm_data.0 %}
+                {% if forloop.counter <= 30 %}
+                <tr>
+                    <td>{{ auc.1|floatformat:2 }}</td>
+                    <td>{{ auc.0 }}</td>
+                </tr>
+                {% endif %}
             {% endfor %}
-        </tr>
-        {% endfor %}
-    </table>
-</div>
-{% endfor %}
+            </table>
+        </div>
+        
+        
+    </div>
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,13 @@
+.mytable tr td {
+    color: black;
+    padding: 1px 2px;
+}
+
+.mytable tr {
+    border-bottom: 0;
+    border: 1px solid rgba(0,0,0,0.12);
+}
+
+table { border-collapse: collapse; }
+tr { display: block; float: left; }
+th, td { display: block;}

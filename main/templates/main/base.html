@@ -1,0 +1,21 @@
+{% load static %}
+
+<head>
+    <title>MyAh - Django project</title>
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'main/style.css' %}">
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</head>
+
+<body>
+    {% include 'main/base_navbar.html' %}
+
+    <div id="content">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+</body>
