@@ -25,7 +25,7 @@ class AuctionId(models.Model):
 
 
 class Realm(models.Model):
-    name = models.TextField(unique=True)
+    name = models.TextField(unique=True, primary_key=True)
     slug = models.TextField(unique=True)
     code = models.TextField(unique=True)
     region = models.TextField()
