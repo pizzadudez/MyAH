@@ -8,9 +8,11 @@ def index(request):
 
     realms = [x[0] for x in Realm.objects.values_list('name')]
     for realm in realms:    
-        auctions = AuctionChunk.objects.filter(realm=realm, item_id=item_id).values_list('quantity', 'price')
+        auctions = AuctionChunk.objects.filter(realm=realm, item_id=item_id).values_list('quantity', 'price', 'owner')
         code = Realm.objects.filter(name=realm).values_list('code')
-        auc_data[realm] = (auctions, code[0][0])
+        seller = '-'.join([Realm.objects.get(name=realm).seller, realm.replace(' ', '')])
+
+        auc_data[realm] = (auctions, code[0][0], seller)
 
     context = {
         'auc_data': auc_data,

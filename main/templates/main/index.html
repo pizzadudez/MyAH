@@ -1,25 +1,49 @@
 {% extends 'main/base.html' %}
 
 {% block content %}
-    {% for realm, realm_data in auc_data.items %}
-    <div class="row" style="margin-bottom:5px;">
-        <div class="col" style="width:45px;">
-            <p><strong>{{ realm_data.1 }}</strong></p>
-        </div>
-        <div class="col">
-            <table class="highlight mytable">     
-            {% for auc in realm_data.0 %}
-                {% if forloop.counter <= 30 %}
-                <tr>
-                    <td>{{ auc.1|floatformat:2 }}</td>
-                    <td>{{ auc.0 }}</td>
-                </tr>
-                {% endif %}
-            {% endfor %}
-            </table>
-        </div>
-        
-        
+<div class="row">
+    <div class="col s12">
+        <ul class="tabs">
+            <li class="tab"><a href="#item1">Item 1</a></li>
+            <li class="tab"><a class="active" href="#item2">Item 2</a></li>
+        </ul>
     </div>
-    {% endfor %}
+    <div id="item1" class="col s12">
+        {% for realm, realm_data in auc_data.items %}
+        <div class="row" style="margin-bottom:5px;">
+            <div class="col" style="width:45px;">
+                <p><strong>{{ realm_data.1 }}</strong></p>
+            </div>
+            <div class="col">
+                <table class="highlight mytable">     
+                {% for auc in realm_data.0 %}
+                    {% if forloop.counter <= 30 %}
+                        {% if auc.2 == realm_data.2 %}
+                        <tr>
+                            <td class="myauction"><strong>{{ auc.1|floatformat:2 }}</strong></td>
+                            <td class="myauction"><strong>{{ auc.0 }}</strong></td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td>{{ auc.1|floatformat:2 }}</td>
+                            <td>{{ auc.0 }}</td>
+                        </tr>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+                </table>
+            </div>  
+        </div>
+        {% endfor %}
+    </div>
+    <div id="item2" class="col s12">
+        <p>Test2</p>
+    </div>
+</div>
+
+<script>
+    var el = $('.tabs').first()[0];
+    var instance = M.Tabs.init(el);
+</script>
+
 {% endblock %}
