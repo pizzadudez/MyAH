@@ -49,7 +49,7 @@ class ItemCategory(models.Model):
 
 
 class Item(models.Model):
-    item_id = models.IntegerField()
+    item_id = models.IntegerField(primary_key=True)
     name = models.TextField(blank=True, null=True)
     short_name = models.TextField(blank=True, null=True)
     category = models.ForeignKey(ItemCategory, models.DO_NOTHING, blank=True, null=True)

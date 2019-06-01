@@ -4,12 +4,14 @@
 <div class="row">
     <div class="col s12">
         <ul class="tabs">
-            <li class="tab"><a href="#item1">Item 1</a></li>
-            <li class="tab"><a class="active" href="#item2">Item 2</a></li>
+            {% for item in items %}
+                <li class="tab"><a href="#{{ item.0 }}">{{ item.1 }}</a></li>
+            {% endfor %}
         </ul>
     </div>
-    <div id="item1" class="col s12">
-        {% for realm, realm_data in auc_data.items %}
+    {% for item_id, item_data in data.items %}
+    <div id="{{ item_id }}" class="col s12">
+        {% for realm, realm_data in item_data.items %}
         <div class="row" style="margin-bottom:5px;">
             <div class="col" style="width:45px;">
                 <p><strong>{{ realm_data.1 }}</strong></p>
@@ -36,9 +38,7 @@
         </div>
         {% endfor %}
     </div>
-    <div id="item2" class="col s12">
-        <p>Test2</p>
-    </div>
+    {% endfor %}
 </div>
 
 <script>
