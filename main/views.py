@@ -24,3 +24,12 @@ def index(request):
     }
 
     return render(request, 'main/index.html', context=context)
+
+def settings(request):
+    realms = [x[0] for x in Realm.objects.values_list('name')]
+
+    context = {
+        'realms': realms,
+    }
+
+    return render(request, 'main/settings.html', context=context)

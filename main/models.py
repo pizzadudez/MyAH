@@ -67,3 +67,11 @@ class StackSize(models.Model):
         managed = False
         db_table = 'stack_sizes'
 
+
+class RealmOrder(models.Model):
+    realm_name = models.ForeignKey(Realm, models.DO_NOTHING, blank=True, null=True)
+    order = models.IntegerField(blank=True, null=True)
+    account = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'realm_order'
