@@ -12,3 +12,8 @@ class MainRouter(object):
         elif model._meta.label in ('main.ItemCategory', 'main.Item', 'main.StackSize'):
             return 'items'
         return None
+
+    def db_for_write(self, model, **hints):
+        if model._meta.label == 'main.RealmOrder':
+            return 'default'
+        return None

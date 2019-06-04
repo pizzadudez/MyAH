@@ -15,3 +15,7 @@
 table { border-collapse: collapse; }
 tr { display: block; float: left; }
 th, td { display: block;}
+
+#my-sortable {
+    margin-left: 15px;
+}

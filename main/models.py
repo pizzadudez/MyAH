@@ -69,7 +69,7 @@ class StackSize(models.Model):
 
 
 class RealmOrder(models.Model):
-    realm_name = models.ForeignKey(Realm, models.DO_NOTHING, blank=True, null=True)
+    realm_name = models.TextField(primary_key=True)
     order = models.IntegerField(blank=True, null=True)
     account = models.IntegerField(blank=True, null=True)
 

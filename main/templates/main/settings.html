@@ -2,8 +2,64 @@
 
 {% block content %}
 
-{% for realm in realms %}
-<p>{{ realm }}</p>
-{% endfor %}
+<div id="my-sortable" class="row">
+  <div id="realm-positions" class="collection col s2">
+  {% for realm in realms %}
+    <div class="collection-item" data-id="{{ realm }}">{{ realm }}</div>
+  {% endfor %}
+  </div>
+</div>
+
+<input type="button" id="serialize" name="serialize" value="Serialize">
+
+{% csrf_token %}
+<script>
+  var el = document.getElementById('realm-positions');
+  const sortableRealms = Sortable.create(el, {animation: 150, });
+
+  function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      var cookies = document.cookie.split(';');
+      for (var i = 0; i < cookies.length; i++) {
+        var cookie = cookies[i].trim();
+        // Does this cookie string begin with the name we want?
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+  var csrftoken = getCookie('csrftoken');
+
+  function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+  }
+  
+  $.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+      if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+      }
+    }
+  });
+
+  $('#serialize').click(function() {
+    $.ajax({
+      type: "POST",
+      url: "{% url 'main:settings' %}",
+      data: {'order[]': serialize()},
+    });
+  });
+
+  function serialize() {
+    var data = sortableRealms.toArray();
+    console.log(data);
+    return data;
+  };
+</script>
 
 {% endblock %}
