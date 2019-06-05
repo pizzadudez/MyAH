@@ -14,6 +14,6 @@ class MainRouter(object):
         return None
 
     def db_for_write(self, model, **hints):
-        if model._meta.label == 'main.RealmOrder':
-            return 'default'
+        if model._meta.label == 'main.Realm':
+            return 'realms'
         return None

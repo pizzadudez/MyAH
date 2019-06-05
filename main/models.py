@@ -25,17 +25,19 @@ class AuctionId(models.Model):
 
 
 class Realm(models.Model):
-    name = models.TextField(unique=True, primary_key=True)
+    name = models.TextField(primary_key=True, unique=True)
     slug = models.TextField(unique=True)
     code = models.TextField(unique=True)
-    region = models.TextField()
-    seller = models.TextField(blank=True, null=True)
     update_interval = models.IntegerField(blank=True, null=True)
     last_update = models.IntegerField(blank=True, null=True)
     json_link = models.TextField(blank=True, null=True)
 
+    seller = models.TextField(blank=True, null=True)
+    region = models.TextField(blank=True, null=True)
+    position = models.IntegerField(blank=False, null=False, default=0)
+    account = models.IntegerField(blank=False, null=False, default=0)
+
     class Meta:
-        managed = False
         db_table = 'realms'
 
 
@@ -66,12 +68,3 @@ class StackSize(models.Model):
     class Meta:
         managed = False
         db_table = 'stack_sizes'
-
-
-class RealmOrder(models.Model):
-    realm_name = models.TextField(primary_key=True)
-    order = models.IntegerField(blank=True, null=True)
-    account = models.IntegerField(blank=True, null=True)
-
-    class Meta:
-        db_table = 'realm_order'
