@@ -44,9 +44,12 @@ class Realm(models.Model):
 class ItemCategory(models.Model):
     category_id = models.AutoField(primary_key=True)
     name = models.TextField(unique=True)
+    position = models.IntegerField(blank=False, null=False, default=0)
+
+    def __str__(self):
+        return self.name
 
     class Meta:
-        managed = False
         db_table = 'item_categories'
 
 
@@ -55,16 +58,22 @@ class Item(models.Model):
     name = models.TextField(blank=True, null=True)
     short_name = models.TextField(blank=True, null=True)
     category = models.ForeignKey(ItemCategory, models.DO_NOTHING, blank=True, null=True)
+    position = models.IntegerField(blank=False, null=False, default=0)
+
+    def __str__(self):
+        return self.name
 
     class Meta:
-        managed = False
         db_table = 'items'
 
 
 class StackSize(models.Model):
+    row_id = models.AutoField(primary_key=True)
     stack_size = models.IntegerField()
     category = models.ForeignKey(ItemCategory, models.DO_NOTHING, blank=True, null=True)
 
+    def __str__(self):
+        return str(self.stack_size)
+
     class Meta:
-        managed = False
         db_table = 'stack_sizes'

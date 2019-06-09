@@ -16,4 +16,6 @@ class MainRouter(object):
     def db_for_write(self, model, **hints):
         if model._meta.label == 'main.Realm':
             return 'realms'
+        if model._meta.label in ('main.ItemCategory', 'main.Item', 'main.StackSize'):
+            return 'items'
         return None

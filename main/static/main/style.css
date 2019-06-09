@@ -19,3 +19,9 @@ th, td { display: block;}
 #my-sortable {
     margin-left: 15px;
 }
+
+.collection .collection-item {
+    padding: 4;
+}
+
+

@@ -2,20 +2,69 @@
 
 {% block content %}
 
+<input type="button" id="serialize" name="serialize" value="Serialize">
+
 <div id="my-sortable" class="row">
-  <div id="realm-positions" class="collection col s2">
+
+  <!-- Realms Sortable -->
+  <div class="collection col s2" id="sort-list-realm">
   {% for realm in realms %}
     <div class="collection-item" data-id="{{ realm }}">{{ realm }}</div>
   {% endfor %}
   </div>
+
+  <!-- Items Sortable-->
+  <div class="collection col s2" id="sort-list-category">
+  {% for category, item_list in items.items %}
+    <div class="collection-item" data-id="{{ category }}">
+      <div class="category-name" align="center"><strong>{{ category }}</strong></div>
+      <div class="collection">
+      {% for item in item_list %}
+        <div class="collection-item" data-id="{{ item }}">{{ item }}</div>
+      {% endfor %}
+      </div>
+    </div>
+  {% endfor %}
+  </div>
+
 </div>
 
-<input type="button" id="serialize" name="serialize" value="Serialize">
 
 {% csrf_token %}
 <script>
-  var el = document.getElementById('realm-positions');
-  const sortableRealms = Sortable.create(el, {animation: 150, });
+  // Realm Sortable
+  let realmList = document.getElementById('sort-list-realm');
+  const realmSortable = Sortable.create(realmList, {animation: 150, });
+  // Category Sortable
+  let categoryList = document.getElementById('sort-list-category');
+  const categorySortable = Sortable.create(categoryList, {animation: 150, });
+  // Items Sortables
+  let itemLists = categoryList.querySelectorAll('#sort-list-category > div');
+  let itemSortables = {};
+  itemLists.forEach(function(el) {
+    itemSortables[el.dataset.id] = Sortable.create(el.querySelectorAll('div')[1], {animation: 150, });
+  });
+
+  function serialize() {
+    realmOrder = realmSortable.toArray();
+
+    itemOrder = Array();
+    categorySortable.toArray().forEach(function(el) {
+      category = {
+        'name': el,
+        'items': itemSortables[el].toArray(),
+      }
+      itemOrder.push(category)
+    });
+    console.log({
+      'realmOrder': realmOrder,
+      'itemOrder': itemOrder
+    })
+    return {
+      'realmOrder': realmOrder,
+      'itemOrder': itemOrder
+    }
+  };
 
   function getCookie(name) {
     var cookieValue = null;
@@ -47,19 +96,15 @@
     }
   });
 
+  // Serialize Button Click handler
   $('#serialize').click(function() {
     $.ajax({
       type: "POST",
       url: "{% url 'main:settings' %}",
-      data: {'order[]': serialize()},
+      data: JSON.stringify(serialize()),
     });
   });
 
-  function serialize() {
-    var data = sortableRealms.toArray();
-    console.log(data);
-    return data;
-  };
 </script>
 
 {% endblock %}

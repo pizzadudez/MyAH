@@ -1,10 +1,12 @@
 from django.shortcuts import render, get_object_or_404
 
-from .models import AuctionChunk, AuctionId, Realm, Item
+from .models import AuctionChunk, AuctionId, Realm, ItemCategory, Item
+
+import json
 
 def index(request):
     item_category = 1
-    items = Item.objects.filter(category_id=item_category).values_list('item_id', 'name')
+    items = Item.objects.filter(category_id=item_category).values_list('item_id', 'name').order_by('position')
     realms = [x[0] for x in Realm.objects.values_list('name').order_by('position')]
 
     data = {}
@@ -27,16 +29,34 @@ def index(request):
 
 def settings(request):
     if request.method == "POST":
-        realm_order = request.POST.getlist('order[]')
-        for position, realm_name in enumerate(realm_order):
+        json_data = json.loads(request.body)
+        for position, realm_name in enumerate(json_data['realmOrder']):
             realm = Realm.objects.get(name=realm_name)
             realm.position = position
             realm.save()
-        
-    realms = [x[0] for x in Realm.objects.values_list('name').order_by('position')]
+        for position, category in enumerate(json_data['itemOrder']):
+            item_category = ItemCategory.objects.get(name=category['name'])
+            item_category.position = position
+            item_category.save()
+            for position, item_name in enumerate(category['items']):
+                item = Item.objects.get(name=item_name)
+                item.position = position
+                item.save()
 
+   
+    # Realm names sorted by position field
+    realms = [x[0] for x in Realm.objects.values_list('name').order_by('position')]
+    # Items by category
+    item_categories = [x[0] for x in ItemCategory.objects.values_list('name').order_by('position')]
+    items = {}
+    for category in item_categories:
+        item_list = Item.objects.filter(category__name=category).order_by('position')
+        if len(item_list):
+            items[category] = item_list
+            
     context = {
         'realms': realms,
+        'items': items,
     }
 
     return render(request, 'main/settings.html', context=context)
