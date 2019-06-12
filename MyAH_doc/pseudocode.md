@@ -23,5 +23,35 @@
 - clicking a button will display either clusters or chunks
 - another option might be to cluster only over a set amount of chunks or price
 
+# AvgMinPrice
+- Q: should this be calculated on the spot in django's backend or in api_data?
+  - A: seems like it can be done with aggregate() on a queryset
+  - auc.aggregate(amp=ExpressionWrapper(Sum(F('price') * F('quantity')) / Sum(F('quantity')), output_field=FloatField()))
+- How is this calculated?
+  - weighted average price of first x% of auctions
+  - x% depends on server and maybe some hardcoded numbers, TBD
+- How do I get the auctionChunks that are in the first x% of auctions?
+    ```
+    get queryset
+    get max_quant
+    loop thru the queryset
+        q_so_far += q
+        if q_so_far > max_quant
+            break
+    ```
+
+## Thinktank
+```
+data = {
+    item_id = {
+        ordered_realms = [];
+        realm_data = {
+            realm = {
+                
+            }
+        }
+    }
+}
+```
 
 

@@ -1,4 +1,28 @@
 from django.db import models
+from django.db.models import Sum, Avg, F
+
+
+class MeanPriceManager(models.Manager):
+    def get(self, realm, item_id):
+        """Returns mean min price for this (realm, item_id)."""
+
+        all_chunks = super().get_queryset().filter(realm=realm, item_id=item_id)
+        total_quantity = all_chunks.aggregate(Sum('quantity'))['quantity__sum']
+        percentage = 0.4 # CHANGEME
+        max_quantity = total_quantity * percentage
+        curr_quantity = 0
+        mean_numerator = 0
+
+        for chunk in all_chunks:
+            if curr_quantity + chunk.quantity <= max_quantity:
+                mean_numerator += chunk.quantity * chunk.price
+            else:
+                break  
+            curr_quantity += chunk.quantity
+
+        print(curr_quantity)
+        return mean_numerator / curr_quantity
+
 
 class AuctionChunk(models.Model):
     chunk_id = models.AutoField(primary_key=True)
@@ -9,6 +33,12 @@ class AuctionChunk(models.Model):
     stack_size = models.IntegerField(blank=True, null=True)
     owner = models.TextField(blank=True, null=True)
     time_left = models.TextField(blank=True, null=True)
+
+    objects = models.Manager()
+    mean_price = MeanPriceManager()
+
+    def __str__(self):
+        return self.price
 
     class Meta:
         managed = False
@@ -36,6 +66,9 @@ class Realm(models.Model):
     region = models.TextField(blank=True, null=True)
     position = models.IntegerField(blank=False, null=False, default=0)
     account = models.IntegerField(blank=False, null=False, default=0)
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         db_table = 'realms'

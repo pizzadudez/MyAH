@@ -27,6 +27,14 @@ def index(request):
 
     return render(request, 'main/index.html', context=context)
 
+def overview(request):
+    item_category = 1
+    item_list = Item.objects.filter(category_id=item_category).values_list('item_id', 'name').order_by('position')
+
+    context = {
+        
+    }
+
 def settings(request):
     if request.method == "POST":
         json_data = json.loads(request.body)
