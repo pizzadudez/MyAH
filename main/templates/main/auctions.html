@@ -1,0 +1,101 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+
+  <div class="row">
+    <!-- Tabs -->
+    <div class="col">
+      <ul id="item-tabs" class="tabs">
+      {% for item in item_list %}
+        <li class="tab"><a href="#{{ item.0 }}">{{ item.1 }}</a></li>
+      {% endfor %}
+      </ul>
+    </div>
+    <!-- Reorder Button -->
+    <div id="sorting-buttons" class="col">
+      <a data-orderby="position" class="waves-effect waves-light btn" style="margin-top:9px;">Position Order</a>  
+      <a data-orderby="mean_price" class="waves-effect waves-light btn disabled" style="margin-top:9px;">Mean Price</a>
+    </div>
+  
+    <div id="item-tables">
+    {% for item_id, item_dict in data.items %}
+      <div id="{{ item_id }}" class="col s12">
+      {% for realm, realm_data in item_dict.item_data.items %}
+        <div class="row" data-id="{{ realm }}" style="margin-bottom:5px;">
+          <div class="col" style="width:45px;">
+            <p><strong>{{ realm_data.1 }}</strong></p>
+          </div>
+
+          <div class="col">
+            <table class="highlight mytable">     
+            {% for auc in realm_data.0 %}
+            {% if forloop.counter <= 30 %}
+            {% if auc.2 == realm_data.2 %}
+              <tr>
+                <td class="myauction"><strong>{{ auc.1|floatformat:1 }}</strong></td>
+                <td class="myauction"><strong>{{ auc.0 }}</strong></td>
+              </tr>
+            {% else %}
+              <tr>
+                <td>{{ auc.1|floatformat:1 }}</td>
+                <td>{{ auc.0 }}</td>
+              </tr>
+            {% endif %}
+            {% endif %}
+            {% endfor %}
+            </table>
+          </div>
+        </div>
+      {% endfor %}
+      </div>
+    {% endfor %}
+    </div>
+  </div>
+
+  <!-- for jsonData -->
+  {{ realm_order|json_script:"json-data" }}
+
+  <script>
+    // Item Tabs Init
+    M.Tabs.init(document.getElementById('item-tabs'));
+    // Sorting Functionality
+    let jsonData = JSON.parse(document.getElementById('json-data').textContent);
+    let itemTables = document.querySelectorAll('#item-tables > div');
+
+    // Sorting Buttons click events
+    let sortingButtons = document.getElementById('sorting-buttons');
+    sortingButtons.childNodes.forEach(function(el) {
+      // handle text nodes
+      if (el.nodeType != 3) {
+        el.addEventListener('click', function() {
+          sortRealms(el.dataset.orderby);
+          enableSortButtons();
+          el.classList.add('disabled');
+        });
+      };
+    });
+
+    function sortRealms(orderList) {
+      // iterate over all realm tables
+      itemTables.forEach(function(itemTable) {
+        // array of ordered realms
+        realmOrder = jsonData[itemTable.id][orderList];
+        // remove and append realm rows in order
+        realmOrder.forEach(function(realm) {
+          queryString = '[data-id="' + realm + '"]';
+          realmRow = itemTable.querySelector(queryString);
+          itemTable.removeChild(realmRow);
+          itemTable.appendChild(realmRow);
+        });
+      });
+    };
+
+    function enableSortButtons() {
+      sortingButtons.childNodes.forEach(function(el) {
+        if (el.nodeType != 3) {
+          el.classList.remove('disabled');
+        };
+      });
+    };   
+  </script>
+{% endblock %}

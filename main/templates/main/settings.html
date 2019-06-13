@@ -1,110 +1,108 @@
 {% extends 'main/base.html' %}
 
 {% block content %}
-
-<input type="button" id="serialize" name="serialize" value="Serialize">
-
-<div id="my-sortable" class="row">
-
-  <!-- Realms Sortable -->
-  <div class="collection col s2" id="sort-list-realm">
-  {% for realm in realms %}
-    <div class="collection-item" data-id="{{ realm }}">{{ realm }}</div>
-  {% endfor %}
-  </div>
-
-  <!-- Items Sortable-->
-  <div class="collection col s2" id="sort-list-category">
-  {% for category, item_list in items.items %}
-    <div class="collection-item" data-id="{{ category }}">
-      <div class="category-name" align="center"><strong>{{ category }}</strong></div>
-      <div class="collection">
-      {% for item in item_list %}
-        <div class="collection-item" data-id="{{ item }}">{{ item }}</div>
-      {% endfor %}
-      </div>
+  <div id="my-sortable" class="row">
+    <!-- Realms Sortable -->
+    <div class="collection col s2" id="sort-list-realm">
+    {% for realm in realms %}
+      <div class="collection-item" data-id="{{ realm }}">{{ realm }}</div>
+    {% endfor %}
     </div>
-  {% endfor %}
+
+    <!-- Items Sortable-->
+    <div class="collection col s2" id="sort-list-category">
+    {% for category, item_list in items.items %}
+      <div class="collection-item" data-id="{{ category }}">
+        <div class="category-name" align="center"><strong>{{ category }}</strong></div>
+        <div class="collection">
+        {% for item in item_list %}
+          <div class="collection-item" data-id="{{ item }}">{{ item }}</div>
+        {% endfor %}
+        </div>
+      </div>
+    {% endfor %}
+    </div>
+
+    <!-- Serialize Button -->
+    <div class="col s1">
+      <a id="serialize" class="waves-effect waves-light btn" style="margin-top:9px;">Serialize</a>
+    </div>
   </div>
 
-</div>
-
-
-{% csrf_token %}
-<script>
-  // Realm Sortable
-  let realmList = document.getElementById('sort-list-realm');
-  const realmSortable = Sortable.create(realmList, {animation: 150, });
-  // Category Sortable
-  let categoryList = document.getElementById('sort-list-category');
-  const categorySortable = Sortable.create(categoryList, {animation: 150, });
-  // Items Sortables
-  let itemLists = categoryList.querySelectorAll('#sort-list-category > div');
-  let itemSortables = {};
-  itemLists.forEach(function(el) {
-    itemSortables[el.dataset.id] = Sortable.create(el.querySelectorAll('div')[1], {animation: 150, });
-  });
-
-  function serialize() {
-    realmOrder = realmSortable.toArray();
-
-    itemOrder = Array();
-    categorySortable.toArray().forEach(function(el) {
-      category = {
-        'name': el,
-        'items': itemSortables[el].toArray(),
-      }
-      itemOrder.push(category)
+  {% csrf_token %}
+  <script>
+    // Realm Sortable
+    let realmList = document.getElementById('sort-list-realm');
+    const realmSortable = Sortable.create(realmList, {animation: 150, });
+    // Category Sortable
+    let categoryList = document.getElementById('sort-list-category');
+    const categorySortable = Sortable.create(categoryList, {animation: 150, });
+    // Items Sortables
+    let itemLists = categoryList.querySelectorAll('#sort-list-category > div');
+    let itemSortables = {};
+    itemLists.forEach(function(el) {
+      itemSortables[el.dataset.id] = Sortable.create(el.querySelectorAll('div')[1], {animation: 150, });
     });
-    console.log({
-      'realmOrder': realmOrder,
-      'itemOrder': itemOrder
-    })
-    return {
-      'realmOrder': realmOrder,
-      'itemOrder': itemOrder
-    }
-  };
 
-  function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-      var cookies = document.cookie.split(';');
-      for (var i = 0; i < cookies.length; i++) {
-        var cookie = cookies[i].trim();
-        // Does this cookie string begin with the name we want?
-        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-          break;
+    function serialize() {
+      realmOrder = realmSortable.toArray();
+
+      itemOrder = Array();
+      categorySortable.toArray().forEach(function(el) {
+        category = {
+          'name': el,
+          'items': itemSortables[el].toArray(),
+        }
+        itemOrder.push(category)
+      });
+      console.log({
+        'realmOrder': realmOrder,
+        'itemOrder': itemOrder
+      })
+      return {
+        'realmOrder': realmOrder,
+        'itemOrder': itemOrder
+      }
+    };
+
+    function getCookie(name) {
+      var cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+          var cookie = cookies[i].trim();
+          // Does this cookie string begin with the name we want?
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
         }
       }
+      return cookieValue;
     }
-    return cookieValue;
-  }
-  var csrftoken = getCookie('csrftoken');
+    var csrftoken = getCookie('csrftoken');
 
-  function csrfSafeMethod(method) {
-    // these HTTP methods do not require CSRF protection
-    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-  }
-  
-  $.ajaxSetup({
-    beforeSend: function(xhr, settings) {
-      if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+    function csrfSafeMethod(method) {
+      // these HTTP methods do not require CSRF protection
+      return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    
+    $.ajaxSetup({
+      beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+              xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
       }
-    }
-  });
-
-  // Serialize Button Click handler
-  $('#serialize').click(function() {
-    $.ajax({
-      type: "POST",
-      url: "{% url 'main:settings' %}",
-      data: JSON.stringify(serialize()),
     });
-  });
 
-</script>
+    // Serialize Button Click handler
+    $('#serialize').click(function() {
+      $.ajax({
+        type: "POST",
+        url: "{% url 'main:settings' %}",
+        data: JSON.stringify(serialize()),
+      });
+    });
 
+  </script>
 {% endblock %}

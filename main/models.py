@@ -2,11 +2,14 @@ from django.db import models
 from django.db.models import Sum, Avg, F
 
 
-class MeanPriceManager(models.Manager):
-    def get(self, realm, item_id):
+class SortManager(models.Manager):
+    def mean_price(self, realm, item_id):
         """Returns mean min price for this (realm, item_id)."""
 
         all_chunks = super().get_queryset().filter(realm=realm, item_id=item_id)
+        if len(all_chunks) == 0:
+            return 999999 # no auctions so put this realm on top
+
         total_quantity = all_chunks.aggregate(Sum('quantity'))['quantity__sum']
         percentage = 0.4 # CHANGEME
         max_quantity = total_quantity * percentage
@@ -14,13 +17,12 @@ class MeanPriceManager(models.Manager):
         mean_numerator = 0
 
         for chunk in all_chunks:
-            if curr_quantity + chunk.quantity <= max_quantity:
+            if curr_quantity + chunk.quantity <= max_quantity or curr_quantity == 0:
                 mean_numerator += chunk.quantity * chunk.price
             else:
                 break  
             curr_quantity += chunk.quantity
 
-        print(curr_quantity)
         return mean_numerator / curr_quantity
 
 
@@ -35,7 +37,7 @@ class AuctionChunk(models.Model):
     time_left = models.TextField(blank=True, null=True)
 
     objects = models.Manager()
-    mean_price = MeanPriceManager()
+    sorting = SortManager()
 
     def __str__(self):
         return self.price

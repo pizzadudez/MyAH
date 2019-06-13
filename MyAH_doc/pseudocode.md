@@ -43,11 +43,16 @@
 ## Thinktank
 ```
 data = {
-    item_id = {
-        ordered_realms = [];
-        realm_data = {
-            realm = {
-                
+    [item_id] = {
+        'realm_order_lists' = {
+            'position' = [],
+            'mean_price' = [],
+            'my_price' = [],
+            'undercut_qty' = []
+        },
+        'item_data' = {
+            [realm] = {
+
             }
         }
     }
