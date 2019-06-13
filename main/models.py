@@ -37,7 +37,7 @@ class AuctionChunk(models.Model):
     time_left = models.TextField(blank=True, null=True)
 
     objects = models.Manager()
-    sorting = SortManager()
+    sort_values = SortManager()
 
     def __str__(self):
         return self.price

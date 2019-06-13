@@ -57,6 +57,21 @@ data = {
         }
     }
 }
+
+item_data = {
+    [item_id] = {
+        [realm] = (auctions, code, seller)
+    }
+}
+
+realm_order = {
+    [item_id] = {
+        'position' = [],
+        'mean_price' = [],
+        'my_price' = [],
+        'undercut_qty' = []
+    }
+}
 ```
 
 

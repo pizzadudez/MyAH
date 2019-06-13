@@ -11,38 +11,32 @@ def auctions(request):
     item_list = Item.objects.filter(category_id=item_category).values_list('item_id', 'name').order_by('position')
     realms = [x[0] for x in Realm.objects.values_list('name').order_by('position')]
 
-    data = {}
+    auc_data = {}
+    realm_order = {}
     for item in item_list:
         item_id = item[0]
-        data[item_id] = {}
-        realm_lists = {}
-        realm_lists['position'] = realms
-        data[item_id]['realm_order_lists'] = realm_lists
+        auc_data[item_id] = {}
+        realm_order[item_id] = {}
+
+        realm_order[item_id]['position'] = realms # order based on realm positions in Realm model
 
         # create MeanPrice ordered realm list
-        temp_list = [(x, AuctionChunk.sorting.mean_price(realm=x, item_id=item_id)) for x in realms]
+        temp_list = [(x, AuctionChunk.sort_values.mean_price(realm=x, item_id=item_id)) for x in realms]
         temp_list.sort(key=lambda x: x[1], reverse=True)
-        realm_lists['mean_price'] = [x[0] for x in temp_list]
+        realm_order[item_id]['mean_price'] = [x[0] for x in temp_list]
 
         # Fetch item data from model
-        default_realm_list = realm_lists['mean_price']
-        item_data = {}
-        data[item_id]['item_data'] = item_data
-        for realm in default_realm_list:
+        default_realm_order = realm_order[item_id]['mean_price']
+        for realm in default_realm_order:
             auctions = AuctionChunk.objects.filter(realm=realm, item_id=item_id).values_list('quantity', 'price', 'owner')
             code = Realm.objects.filter(name=realm).values_list('code')
             seller = '-'.join([Realm.objects.get(name=realm).seller, realm.replace(' ', '')])
 
-            item_data[realm] = (list(auctions), code[0][0], seller)
-
-    # Just the realm Orders for sorting with JS 
-    realm_order = {}
-    for item_id in data.keys():
-        realm_order[item_id] = data[item_id]['realm_order_lists']
+            auc_data[item_id][realm] = (list(auctions), code[0][0], seller)
 
     context = {
         'item_list': item_list,
-        'data': data,
+        'auc_data': auc_data,
         'realm_order': realm_order,
     }
 

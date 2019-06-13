@@ -16,11 +16,11 @@
       <a data-orderby="position" class="waves-effect waves-light btn" style="margin-top:9px;">Position Order</a>  
       <a data-orderby="mean_price" class="waves-effect waves-light btn disabled" style="margin-top:9px;">Mean Price</a>
     </div>
-  
+    <!-- Item Tables (Tabs) -->
     <div id="item-tables">
-    {% for item_id, item_dict in data.items %}
+    {% for item_id, item_data in auc_data.items %}
       <div id="{{ item_id }}" class="col s12">
-      {% for realm, realm_data in item_dict.item_data.items %}
+      {% for realm, realm_data in item_data.items %}
         <div class="row" data-id="{{ realm }}" style="margin-bottom:5px;">
           <div class="col" style="width:45px;">
             <p><strong>{{ realm_data.1 }}</strong></p>
