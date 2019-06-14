@@ -17,13 +17,28 @@ def auctions(request):
         item_id = item[0]
         auc_data[item_id] = {}
         realm_order[item_id] = {}
-
         realm_order[item_id]['position'] = realms # order based on realm positions in Realm model
 
         # create MeanPrice ordered realm list
         temp_list = [(x, AuctionChunk.sort_values.mean_price(realm=x, item_id=item_id)) for x in realms]
         temp_list.sort(key=lambda x: x[1], reverse=True)
-        realm_order[item_id]['mean_price'] = [x[0] for x in temp_list]
+        mean_list = [x[0] for x in temp_list]
+        realm_order[item_id]['mean_price'] = mean_list
+
+        # create realm orders where seller's auction appear first and ordered by price/undercut_count
+        temp_list = []
+        mean_list_rest = []
+        for realm in mean_list:
+            my_price, undercut_count = AuctionChunk.sort_values.my_price_and_undercut_count(realm, item_id)
+            if my_price:
+                temp_list.append((realm, my_price, undercut_count))
+            else:
+                mean_list_rest.append(realm)
+        temp_list.sort(key=lambda x: x[1], reverse=True)
+        realm_order[item_id]['my_price'] = [x[0] for x in temp_list] + mean_list_rest
+        temp_list.sort(key=lambda x: x[2], reverse=True)
+        realm_order[item_id]['undercut_count'] = [x[0] for x in temp_list] + mean_list_rest
+            
 
         # Fetch item data from model
         default_realm_order = realm_order[item_id]['mean_price']

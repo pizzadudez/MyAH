@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import Sum, Avg, F
+from django.db.models import Sum, F
 
 
 class SortManager(models.Manager):
@@ -25,13 +25,36 @@ class SortManager(models.Manager):
 
         return mean_numerator / curr_quantity
 
+    def my_price_and_undercut_count(self, realm, item_id):
+        """Returns price of lowest AuctionChunk owned by Realm's seller and also
+        how many auctions are posted for less (undercut). Returns None if no
+        auctions are posted by the seller.
+        """
+
+        seller = Realm.objects.get(name=realm).seller
+        full_name = f"{seller}-{realm.replace(' ', '')}"
+        query = super().get_queryset().filter(realm=realm, item_id=item_id, owner=full_name).values_list('price')
+        # No chunk posted by seller
+        if len(query) < 1:
+            return None, None
+        # Sort price_list and return lowest
+        price_list = [x[0] for x in list(query)]
+        price_list.sort()
+        my_price = price_list[0]
+
+        # Count how many auctions are posted for less than my_price
+        query = super().get_queryset().filter(realm=realm, item_id=item_id, price__lt=my_price)
+        undercut_count = query.aggregate(Sum('quantity'))['quantity__sum']
+
+        return my_price, undercut_count
+
 
 class AuctionChunk(models.Model):
     chunk_id = models.AutoField(primary_key=True)
     realm = models.TextField(blank=True, null=True)
     item_id = models.IntegerField(blank=True, null=True)
     quantity = models.IntegerField(blank=True, null=True)
-    price = models.IntegerField(blank=True, null=True)
+    price = models.FloatField(blank=True, null=True)
     stack_size = models.IntegerField(blank=True, null=True)
     owner = models.TextField(blank=True, null=True)
     time_left = models.TextField(blank=True, null=True)
@@ -40,7 +63,7 @@ class AuctionChunk(models.Model):
     sort_values = SortManager()
 
     def __str__(self):
-        return self.price
+        return str(self.price)
 
     class Meta:
         managed = False

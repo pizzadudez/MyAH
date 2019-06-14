@@ -74,4 +74,9 @@ realm_order = {
 }
 ```
 
+# Realm ordering - the rest
+
+```
+class SortManager
+```
 
