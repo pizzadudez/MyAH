@@ -74,9 +74,6 @@ realm_order = {
 }
 ```
 
-# Realm ordering - the rest
+# MeanPrice Percentage
 
-```
-class SortManager
-```
 

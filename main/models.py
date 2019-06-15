@@ -44,7 +44,7 @@ class SortManager(models.Manager):
 
         # Count how many auctions are posted for less than my_price
         query = super().get_queryset().filter(realm=realm, item_id=item_id, price__lt=my_price)
-        undercut_count = query.aggregate(Sum('quantity'))['quantity__sum']
+        undercut_count = query.aggregate(Sum('quantity'))['quantity__sum'] or 0
 
         return my_price, undercut_count
 
