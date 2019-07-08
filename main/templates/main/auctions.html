@@ -25,7 +25,11 @@
       {% for realm, realm_data in item_data.items %}
         <div class="row" data-id="{{ realm }}" style="margin-bottom:5px;">
           <div class="col" style="width:45px;">
-            <p><strong>{{ realm_data.1 }}</strong></p>
+          {% if realm_data.3 == 0 %}
+            <p style="color:#ffa04d;"><strong>{{ realm_data.1 }}</strong></p>
+          {% else %}
+            <p style="color:#5294ff;"><strong>{{ realm_data.1 }}</strong></p>
+          {% endif %}
           </div>
 
           <div class="col">
