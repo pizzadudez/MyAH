@@ -48,7 +48,7 @@ def auctions(request):
             seller = '-'.join([Realm.objects.get(name=realm).seller, realm.replace(' ', '')])
             account = Realm.objects.get(name=realm).account
             
-            auc_data[item_id][realm] = (list(auctions), code[0][0], seller, account)
+            auc_data[item_id][realm] = (list(auctions), code[0][0], account, seller)
 
     context = {
         'item_list': item_list,
