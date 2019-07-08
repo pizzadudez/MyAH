@@ -6,7 +6,7 @@ import json
 
 
 def auctions(request):
-    item_category = 1
+    item_category = 3
     # get list of (item_id, name) tuples
     item_list = Item.objects.filter(category_id=item_category).values_list('item_id', 'name').order_by('position')
     realms = [x[0] for x in Realm.objects.values_list('name').order_by('position')]

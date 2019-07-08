@@ -85,6 +85,7 @@ class Realm(models.Model):
     code = models.TextField(unique=True)
     update_interval = models.IntegerField(blank=True, null=True)
     last_update = models.IntegerField(blank=True, null=True)
+    #last_check = models.IntegerField(blank=True, null=True)
     json_link = models.TextField(blank=True, null=True)
 
     seller = models.TextField(blank=True, null=True)
