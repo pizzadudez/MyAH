@@ -12,6 +12,10 @@
     color: red;
 }
 
+.stack-size-100 {
+    color: #616161;
+}
+
 table { border-collapse: collapse; }
 tr { display: block; float: left; }
 th, td { display: block;}

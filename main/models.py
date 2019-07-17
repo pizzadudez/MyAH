@@ -136,3 +136,15 @@ class StackSize(models.Model):
 
     class Meta:
         db_table = 'stack_sizes'
+
+
+class HopRealm(models.Model):
+    name = models.TextField(primary_key=True, unique=True)
+    category = models.TextField(blank=True, null=True)
+    position = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = 'hop_realms'

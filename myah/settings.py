@@ -92,6 +92,10 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'external_dbs/auctions.sqlite3'),
     },
+    'hop_realms': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'external_dbs/hop_realms.sqlite3'),
+    },
 }
 
 DATABASE_ROUTERS = ['main.routers.MainRouter']

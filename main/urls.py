@@ -6,4 +6,5 @@ app_name = 'main'
 urlpatterns = [
     path('', views.auctions, name='auctions'),
     path('settings', views.settings, name='settings'),
+    path('hop', views.hop_realms, name = 'hop'),
 ]

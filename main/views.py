@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 
-from .models import AuctionChunk, AuctionId, Realm, ItemCategory, Item
+from .models import AuctionChunk, AuctionId, Realm, ItemCategory, Item, HopRealm
 
 import json
 
@@ -39,11 +39,10 @@ def auctions(request):
         temp_list.sort(key=lambda x: x[2], reverse=True)
         realm_order[item_id]['undercut_count'] = [x[0] for x in temp_list] + mean_list_rest
             
-
         # Fetch item data from model
         default_realm_order = realm_order[item_id]['mean_price']
         for realm in default_realm_order:
-            auctions = AuctionChunk.objects.filter(realm=realm, item_id=item_id).values_list('quantity', 'price', 'owner')
+            auctions = AuctionChunk.objects.filter(realm=realm, item_id=item_id).values_list('quantity', 'price', 'stack_size', 'owner')
             code = Realm.objects.filter(name=realm).values_list('code')
             seller = '-'.join([Realm.objects.get(name=realm).seller, realm.replace(' ', '')])
             account = Realm.objects.get(name=realm).account
@@ -91,3 +90,26 @@ def settings(request):
     }
 
     return render(request, 'main/settings.html', context=context)
+
+def hop_realms(request):
+    if request.method == 'POST':
+        json_data = json.loads(request.body)
+        for category in json_data.keys():
+            for position, realm_name in enumerate(json_data[category]):
+                realm = HopRealm.objects.get(name=realm_name)
+                realm.position = position
+                realm.category = None if category == 'no_category' else category
+                realm.save()
+    
+    realms = {}
+    categories = [x[0] for x in HopRealm.objects.values_list('category').distinct()]
+    for category in categories:
+        realm_list = [x[0] for x in HopRealm.objects.filter(category=category).values_list('name').order_by('position')]
+        if not category:
+            category = 'no_category'
+        realms[category] = realm_list
+
+    context = {
+        'realms': realms,
+    }
+    return render(request, 'main/hop_realms.html', context=context)

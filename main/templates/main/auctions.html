@@ -36,10 +36,15 @@
             <table class="highlight mytable">     
             {% for auc in realm_data.0 %}
             {% if forloop.counter <= 30 %}
-            {% if auc.2 == realm_data.3 %}
+            {% if auc.3 == realm_data.3 %}
               <tr>
                 <td class="myauction"><strong>{{ auc.1|floatformat:1 }}</strong></td>
                 <td class="myauction"><strong>{{ auc.0 }}</strong></td>
+              </tr>
+            {% elif auc.2 == 100 %}
+              <tr>
+                <td class="stack-size-100">{{ auc.1|floatformat:1 }}</td>
+                <td class="stack-size-100">{{ auc.0 }}</td>
               </tr>
             {% else %}
               <tr>

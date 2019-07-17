@@ -11,6 +11,8 @@ class MainRouter(object):
             return 'realms'
         elif model._meta.label in ('main.ItemCategory', 'main.Item', 'main.StackSize'):
             return 'items'
+        elif model._meta.label == 'main.HopRealm':
+            return 'hop_realms'
         return None
 
     def db_for_write(self, model, **hints):
@@ -18,4 +20,6 @@ class MainRouter(object):
             return 'realms'
         if model._meta.label in ('main.ItemCategory', 'main.Item', 'main.StackSize'):
             return 'items'
+        elif model._meta.label == 'main.HopRealm':
+            return 'hop_realms'
         return None

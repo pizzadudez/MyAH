@@ -1,0 +1,115 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+  <div id="my-sortable" class="row">
+    <div class="col s2">
+      <!-- Serialize Button -->
+      <a id="serialize" class="waves-effect waves-light btn" style="margin-top:9px">Serialize</a>
+      <!-- Hop List -->
+      <p style="color:green"><strong>Hop List</strong></p>
+      <div class="collection" id="hop_list">
+      {% for realm in realms.hop_list %}
+        <div class="collection-item" data-id="{{ realm }}">{{ forloop.counter }} {{ realm }}</div>
+      {% endfor %}
+      </div>
+    </div>
+    <!-- BlackList -->
+    <div class="col s2">
+        <!-- Temp BlackList -->
+        <p style="color:green"><strong>Temp Competition</strong></p>
+        <div class="collection" id="temp_competition">
+        {% for realm in realms.temp_competition %}
+          <div class="collection-item" data-id="{{ realm }}">{{ realm }}</div>
+        {% endfor %}
+        </div>
+        <!-- Day BlackList -->
+        <p style="color:green"><strong>Today Competition</strong></p>
+        <div class="collection" id="competition">
+        {% for realm in realms.competition %}
+          <div class="collection-item" data-id="{{ realm }}">{{ realm }}</div>
+        {% endfor %}
+        </div>
+      </div>
+    <!-- Bad -->
+    <div class="col s2">
+      <!-- Avoid -->
+      <p style="color:green"><strong>Permanent Competition</strong></p>
+      <div class="collection" id="permanent_competition">
+      {% for realm in realms.permanent_competition %}
+        <div class="collection-item" data-id="{{ realm }}">{{ realm }}</div>
+      {% endfor %}
+      </div>
+      <!-- No category -->
+      <p style="color:green"><strong>No Category</strong></p>
+      <div class="collection" id="no_category">
+      {% for realm in realms.no_category %}
+        <div class="collection-item" data-id="{{ realm }}">{{ realm }}</div>
+      {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  {% csrf_token %}
+  <script>
+    // Sortables
+    let sortables = {}
+    let categories = ['hop_list', 'temp_competition', 'competition', 'permanent_competition', 'no_category']
+    categories.forEach(function(id) {
+      let el = document.getElementById(id)
+      sortables[id] = Sortable.create(el, {
+        group: 'shared',
+        animation: 150,
+      });
+    });
+
+    // Serialize for POST
+    function serialize() {
+      data = {};
+      for (const [key, value] of Object.entries(sortables)) {
+        data[key] = value.toArray();
+      }
+      console.log(data);
+      return data;
+    };
+
+    function getCookie(name) {
+      var cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+          var cookie = cookies[i].trim();
+          // Does this cookie string begin with the name we want?
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+
+    function csrfSafeMethod(method) {
+      // these HTTP methods do not require CSRF protection
+      return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    
+    $.ajaxSetup({
+      beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+              xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+      }
+    });
+
+    // Serialize Button Click handler
+    $('#serialize').click(function() {
+      $.ajax({
+        type: "POST",
+        url: "{% url 'main:hop' %}",
+        data: JSON.stringify(serialize()),
+      });
+    });
+
+  </script>
+{% endblock %}
