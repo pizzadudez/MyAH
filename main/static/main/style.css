@@ -1,7 +1,15 @@
+.mytable {
+    border-left: 1px solid #000000;
+    border-top: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+}
+
 .mytable tr {
     color: black;
     border-bottom: 0;
-    border: 1px solid rgba(0,0,0,0.12);
+    border-right: 1px solid #000000;
+    padding-left: 2px;
+    padding-right: 2px;
 }
 
 .mytable tr td{
@@ -13,7 +21,11 @@
 }
 
 .stack-size-100 {
-    color: #616161;
+    color: #addaeb;
+}
+
+.stack-size-200 {
+    color: #ffffff;
 }
 
 table { border-collapse: collapse; }
@@ -26,6 +38,19 @@ th, td { display: block;}
 
 .collection .collection-item {
     padding: 4;
+    background-color: #424242;
+    border-bottom: 1px solid #272727;
 }
 
+.collection {
+    border: 1px solid #272727;
+}
 
+body {
+    background-color: #424242;
+    color: #e4e4e4;
+}
+
+.tabs {
+    background-color: #424242;
+}

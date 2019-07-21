@@ -6,7 +6,7 @@
       <!-- Serialize Button -->
       <a id="serialize" class="waves-effect waves-light btn" style="margin-top:9px">Serialize</a>
       <!-- Hop List -->
-      <p style="color:green"><strong>Hop List</strong></p>
+      <p style="color:orange"><strong>Hop List</strong></p>
       <div class="collection" id="hop_list">
       {% for realm in realms.hop_list %}
         <div class="collection-item" data-id="{{ realm }}">{{ forloop.counter }} {{ realm }}</div>
@@ -16,14 +16,14 @@
     <!-- BlackList -->
     <div class="col s2">
         <!-- Temp BlackList -->
-        <p style="color:green"><strong>Temp Competition</strong></p>
+        <p style="color:orange"><strong>Temp Competition</strong></p>
         <div class="collection" id="temp_competition">
         {% for realm in realms.temp_competition %}
           <div class="collection-item" data-id="{{ realm }}">{{ realm }}</div>
         {% endfor %}
         </div>
         <!-- Day BlackList -->
-        <p style="color:green"><strong>Today Competition</strong></p>
+        <p style="color:orange"><strong>Today Competition</strong></p>
         <div class="collection" id="competition">
         {% for realm in realms.competition %}
           <div class="collection-item" data-id="{{ realm }}">{{ realm }}</div>
@@ -33,14 +33,14 @@
     <!-- Bad -->
     <div class="col s2">
       <!-- Avoid -->
-      <p style="color:green"><strong>Permanent Competition</strong></p>
+      <p style="color:orange"><strong>Permanent Competition</strong></p>
       <div class="collection" id="permanent_competition">
       {% for realm in realms.permanent_competition %}
         <div class="collection-item" data-id="{{ realm }}">{{ realm }}</div>
       {% endfor %}
       </div>
       <!-- No category -->
-      <p style="color:green"><strong>No Category</strong></p>
+      <p style="color:orange"><strong>No Category</strong></p>
       <div class="collection" id="no_category">
       {% for realm in realms.no_category %}
         <div class="collection-item" data-id="{{ realm }}">{{ realm }}</div>
