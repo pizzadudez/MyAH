@@ -1,3 +1,22 @@
+body {
+    background-color: #424242;
+    color: #e4e4e4;
+}
+
+nav {
+    background-color: #636363;
+}
+
+nav ul a,
+nav .brand-logo {
+    color: #fff5e8;
+}
+
+nav .brand-logo.right {
+    right: 2rem;
+}
+
+
 .mytable {
     border-left: 1px solid #000000;
     border-top: 1px solid #000000;
@@ -46,11 +65,45 @@ th, td { display: block;}
     border: 1px solid #272727;
 }
 
-body {
-    background-color: #424242;
-    color: #e4e4e4;
-}
 
 .tabs {
     background-color: #424242;
+}
+
+.tabs .tab a:hover,
+.tabs .tab a.active {
+    color: #ffd67d;
+}
+
+.tabs .tab a:focus,
+.tabs .tab a:focus.active,
+.tabs .tab a:hover {
+    background-color: #6d6d6d50;
+}
+
+.tabs .tab a {
+    color: #ffd67d;
+}
+
+.tabs .indicator {
+    background-color: #a7a7a7;
+}
+
+
+.btn {
+    background-color: #636363;
+}
+
+.btn:hover {
+    background-color: #a7a7a7;
+}
+
+
+#sort-list-category {
+    margin-left: 15px;
+}
+
+#item-tabs {
+    margin-bottom: 10px;
+    margin-top: 4px;
 }
