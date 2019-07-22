@@ -3,14 +3,14 @@
 {% block content %}
   <div id="my-sortable" class="row">
     <!-- Realms Sortable -->
-    <div class="collection col s2" id="sort-list-realm">
+    <div class="collection col s2 my-collection" id="sort-list-realm">
     {% for realm in realms %}
       <div class="collection-item" data-id="{{ realm }}">{{ realm }}</div>
     {% endfor %}
     </div>
 
     <!-- Items Sortable-->
-    <div class="collection col s2" id="sort-list-category">
+    <div class="collection col s2 my-collection" id="sort-list-category">
     {% for category, item_list in items.items %}
       <div class="collection-item" data-id="{{ category }}">
         <div class="category-name" align="center"><strong>{{ category }}</strong></div>
