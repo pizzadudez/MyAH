@@ -35,19 +35,20 @@ def auctions(request):
             else:
                 mean_list_rest.append(realm)
         temp_list.sort(key=lambda x: x[1], reverse=True)
-        realm_order[item_id]['my_price'] = [x[0] for x in temp_list] + mean_list_rest
+        # realm_order[item_id]['my_price'] = [x[0] for x in temp_list] + mean_list_rest
         temp_list.sort(key=lambda x: x[2], reverse=True)
-        realm_order[item_id]['undercut_count'] = [x[0] for x in temp_list] + mean_list_rest
+        # realm_order[item_id]['undercut_count'] = [x[0] for x in temp_list] + mean_list_rest
             
         # Fetch item data from model
         default_realm_order = realm_order[item_id]['mean_price']
         for realm in default_realm_order:
-            auctions = AuctionChunk.objects.filter(realm=realm, item_id=item_id).values_list('quantity', 'price', 'stack_size', 'owner')
+            auctions = AuctionChunk.objects.filter(realm=realm, item_id=item_id).values_list('price', 'quantity', 'stack_size')
+            auctions = [(x[0], x[1] * x[2]) for x in auctions]
             code = Realm.objects.filter(name=realm).values_list('code')
-            seller = '-'.join([Realm.objects.get(name=realm).seller, realm.replace(' ', '')])
+            # seller = '-'.join([Realm.objects.get(name=realm).seller, realm.replace(' ', '')])
             account = Realm.objects.get(name=realm).account
             
-            auc_data[item_id][realm] = (list(auctions), code[0][0], account, seller)
+            auc_data[item_id][realm] = (list(auctions), code[0][0], account)
 
     context = {
         'item_list': item_list,

@@ -31,9 +31,9 @@ class SortManager(models.Manager):
         auctions are posted by the seller.
         """
 
-        seller = Realm.objects.get(name=realm).seller
-        full_name = f"{seller}-{realm.replace(' ', '')}"
-        query = super().get_queryset().filter(realm=realm, item_id=item_id, owner=full_name).values_list('price')
+        # seller = Realm.objects.get(name=realm).seller
+        # full_name = f"{seller}-{realm.replace(' ', '')}"
+        query = super().get_queryset().filter(realm=realm, item_id=item_id).values_list('price')
         # No chunk posted by seller
         if len(query) < 1:
             return None, None
@@ -56,11 +56,15 @@ class AuctionChunk(models.Model):
     quantity = models.IntegerField(blank=True, null=True)
     price = models.FloatField(blank=True, null=True)
     stack_size = models.IntegerField(blank=True, null=True)
-    owner = models.TextField(blank=True, null=True)
+    # owner = models.TextField(blank=True, null=True)
     time_left = models.TextField(blank=True, null=True)
 
     objects = models.Manager()
     sort_values = SortManager()
+
+    @property
+    def total_quantity(self):
+        return self.quantity * self.stack_size
 
     def __str__(self):
         return str(self.price)
@@ -88,7 +92,7 @@ class Realm(models.Model):
     #last_check = models.IntegerField(blank=True, null=True)
     json_link = models.TextField(blank=True, null=True)
 
-    seller = models.TextField(blank=True, null=True)
+    # seller = models.TextField(blank=True, null=True)
     region = models.TextField(blank=True, null=True)
     position = models.IntegerField(blank=False, null=False, default=0)
     account = models.IntegerField(blank=False, null=False, default=0)

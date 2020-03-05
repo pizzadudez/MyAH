@@ -36,16 +36,13 @@
             <table class="highlight mytable">     
             {% for auc in realm_data.0 %}
             {% if forloop.counter <= 30 %}
-              <tr class="tooltipped" data-position="right" data-tooltip="{{ auc.3 }}">
-              {% if auc.3 == realm_data.3 %}
-                <td class="myauction"><strong>{{ auc.1|floatformat:1 }}</strong></td>
-                <td class="myauction"><strong>{{ auc.0 }}</strong></td>
-              {% elif auc.2 == 100 %}
-                <td class="stack-size-100">{{ auc.1|floatformat:1 }}</td>
-                <td class="stack-size-100">{{ auc.0 }}</td>
+              <tr class="tooltipped" data-position="right" data-tooltip="{{ auc.0 }}">
+              {% if auc.1 <= 2000 %}
+                <td class="stack-size-100">{{ auc.0|floatformat:1 }}</td>
+                <td class="stack-size-100">{{ auc.1 }}</td>
               {% else %}
-                <td class="stack-size-200">{{ auc.1|floatformat:1 }}</td>
-                <td class="stack-size-200">{{ auc.0 }}</td>
+                <td class="stack-size-200">{{ auc.0|floatformat:1 }}</td>
+                <td class="stack-size-200">{{ auc.1 }}</td>
               {% endif %}
               </tr>
             {% endif %}
@@ -64,10 +61,10 @@
 
   <script>
     // Materialize Tooltips
-    document.addEventListener('DOMContentLoaded', function() {
-      var elems = document.querySelectorAll('.tooltipped');
-      var instances = M.Tooltip.init(elems, {})
-    });
+    // document.addEventListener('DOMContentLoaded', function() {
+    //   var elems = document.querySelectorAll('.tooltipped');
+    //   var instances = M.Tooltip.init(elems, {})
+    // });
     // Item Tabs Init
     M.Tabs.init(document.getElementById('item-tabs'));
     // Sorting Functionality
