@@ -1,110 +1,136 @@
-{% extends 'main/base.html' %}
+{% extends 'main/base.html' %} {% block content %}
 
-{% block content %}
-
-  <div class="row">
-    <!-- Tabs -->
-    <div class="col">
-      <ul id="item-tabs" class="tabs">
+<div class="row">
+  <!-- Tabs -->
+  <div class="col">
+    <ul id="item-tabs" class="tabs">
       {% for item in item_list %}
-        <li class="tab"><a href="#{{ item.0 }}">{{ item.1 }}</a></li>
+      <li class="tab"><a href="#{{ item.0 }}">{{ item.1 }}</a></li>
       {% endfor %}
-      </ul>
-    </div>
-    <!-- Reorder Button -->
-    <div id="sorting-buttons" class="col">
-      <a data-orderby="mean_price" class="waves-effect waves-light btn disabled" style="margin-top:9px;">Mean Price</a>
-      <a data-orderby="my_price" class="waves-effect waves-light btn" style="margin-top:9px;">My Price</a>
-      <a data-orderby="undercut_count" class="waves-effect waves-light btn" style="margin-top:9px;">Undercut Count</a>
-      <a data-orderby="position" class="waves-effect waves-light btn" style="margin-top:9px;">Position Order</a>
-    </div>
-    <!-- Item Tables (Tabs) -->
-    <div id="item-tables">
-    {% for item_id, item_data in auc_data.items %}
-      <div id="{{ item_id }}" class="col s12">
-      {% for realm, realm_data in item_data.items %}
-        <div class="row" data-id="{{ realm }}" style="margin-bottom:5px;">
-          <div class="col" style="width:45px;">
-          {% if realm_data.2 == 0 %}
-            <p style="color:#ffa04d;"><strong>{{ realm_data.1 }}</strong></p>
-          {% else %}
-            <p style="color:#5294ff;"><strong>{{ realm_data.1 }}</strong></p>
-          {% endif %}
-          </div>
-
-          <div class="col">
-            <table class="highlight mytable">     
-            {% for auc in realm_data.0 %}
-            {% if forloop.counter <= 30 %}
-              <tr class="tooltipped" data-position="right" data-tooltip="{{ auc.0 }}">
-              {% if auc.1 <= 2000 %}
-                <td class="stack-size-100">{{ auc.0|floatformat:1 }}</td>
-                <td class="stack-size-100">{{ auc.1 }}</td>
-              {% else %}
-                <td class="stack-size-200">{{ auc.0|floatformat:1 }}</td>
-                <td class="stack-size-200">{{ auc.1 }}</td>
-              {% endif %}
-              </tr>
-            {% endif %}
-            {% endfor %}
-            </table>
-          </div>
-        </div>
-      {% endfor %}
-      </div>
-    {% endfor %}
-    </div>
+    </ul>
   </div>
+  <!-- Reorder Button -->
+  <div id="sorting-buttons" class="col">
+    <a
+      data-orderby="mean_price"
+      class="waves-effect waves-light btn disabled"
+      style="margin-top:9px;"
+      >Mean Price</a
+    >
+    <a
+      data-orderby="my_price"
+      class="waves-effect waves-light btn"
+      style="margin-top:9px;"
+      >My Price</a
+    >
+    <a
+      data-orderby="undercut_count"
+      class="waves-effect waves-light btn"
+      style="margin-top:9px;"
+      >Undercut Count</a
+    >
+    <a
+      data-orderby="position"
+      class="waves-effect waves-light btn"
+      style="margin-top:9px;"
+      >Position Order</a
+    >
+  </div>
+  <!-- Item Tables (Tabs) -->
+  <div id="item-tables">
+    {% for item_id, item_data in auc_data.items %}
+    <div id="{{ item_id }}" class="col s12">
+      {% for realm, realm_data in item_data.items %}
+      <div class="row" data-id="{{ realm }}" style="margin-bottom:5px;">
+        <div class="col" style="width:45px;margin-top:16px;">
+          {% if realm_data.2 == 0 %}
+          <span style="color:#ffa04d;font-size: 1.4rem;font-weight: 600;">
+            {{ realm_data.1 }}
+          </span>
+          {% else %}
+          <span style="color:#5294ff;font-size: 1.4rem;font-weight: 600;">
+            {{ realm_data.1 }}
+          </span>
+          {% endif %}
+        </div>
 
-  <!-- for jsonData -->
-  {{ realm_order|json_script:"json-data" }}
+        <div class="col">
+          <table class="highlight mytable">
+            {% for auc in realm_data.0 %} {% if forloop.counter <= 30 %}
+            <tr
+              class="tooltipped"
+              data-position="right"
+              data-tooltip="{{ auc.0 }}"
+            >
+              {% if auc.2 %}
+              <td class="my-auction">{{ auc.0|floatformat:1 }}</td>
+              {% else %}
+              <td>{{ auc.0|floatformat:1 }}</td>
+              {% endif %} {% if auc.1 < 1.0 %}
+              <td class="stack-size-100">{{ auc.1|floatformat:1 }} K</td>
+              {% else %}
+              <td class="stack-size-200">{{ auc.1|floatformat:1 }} K</td>
+              {% endif %}
+            </tr>
+            {% endif %} {% endfor %}
+          </table>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endfor %}
+  </div>
+</div>
 
-  <script>
-    // Materialize Tooltips
-    // document.addEventListener('DOMContentLoaded', function() {
-    //   var elems = document.querySelectorAll('.tooltipped');
-    //   var instances = M.Tooltip.init(elems, {})
-    // });
-    // Item Tabs Init
-    M.Tabs.init(document.getElementById('item-tabs'));
-    // Sorting Functionality
-    let jsonData = JSON.parse(document.getElementById('json-data').textContent);
-    let itemTables = document.querySelectorAll('#item-tables > div');
+<!-- for jsonData -->
+{{ realm_order|json_script:"json-data" }}
 
-    // Sorting Buttons click events
-    let sortingButtons = document.getElementById('sorting-buttons');
-    sortingButtons.childNodes.forEach(function(el) {
-      // handle text nodes
-      if (el.nodeType != 3) {
-        el.addEventListener('click', function() {
-          sortRealms(el.dataset.orderby);
-          enableSortButtons();
-          el.classList.add('disabled');
-        });
-      };
+<script>
+  // Materialize Tooltips
+  // document.addEventListener('DOMContentLoaded', function() {
+  //   var elems = document.querySelectorAll('.tooltipped');
+  //   var instances = M.Tooltip.init(elems, {})
+  // });
+  // Item Tabs Init
+  M.Tabs.init(document.getElementById('item-tabs'));
+  // Sorting Functionality
+  let jsonData = JSON.parse(document.getElementById('json-data').textContent);
+  let itemTables = document.querySelectorAll('#item-tables > div');
+
+  // Sorting Buttons click events
+  let sortingButtons = document.getElementById('sorting-buttons');
+  sortingButtons.childNodes.forEach(function(el) {
+    // handle text nodes
+    if (el.nodeType != 3) {
+      el.addEventListener('click', function() {
+        sortRealms(el.dataset.orderby);
+        enableSortButtons();
+        el.classList.add('disabled');
+      });
+    }
+  });
+
+  function sortRealms(orderList) {
+    // iterate over all realm tables
+    itemTables.forEach(function(itemTable) {
+      // array of ordered realms
+      realmOrder = jsonData[itemTable.id][orderList];
+      // remove and append realm rows in order
+      realmOrder.forEach(function(realm) {
+        queryString = '[data-id="' + realm + '"]';
+        realmRow = itemTable.querySelector(queryString);
+        itemTable.removeChild(realmRow);
+        itemTable.appendChild(realmRow);
+      });
     });
+  }
 
-    function sortRealms(orderList) {
-      // iterate over all realm tables
-      itemTables.forEach(function(itemTable) {
-        // array of ordered realms
-        realmOrder = jsonData[itemTable.id][orderList];
-        // remove and append realm rows in order
-        realmOrder.forEach(function(realm) {
-          queryString = '[data-id="' + realm + '"]';
-          realmRow = itemTable.querySelector(queryString);
-          itemTable.removeChild(realmRow);
-          itemTable.appendChild(realmRow);
-        });
-      });
-    };
-
-    function enableSortButtons() {
-      sortingButtons.childNodes.forEach(function(el) {
-        if (el.nodeType != 3) {
-          el.classList.remove('disabled');
-        };
-      });
-    };
-  </script>
+  function enableSortButtons() {
+    sortingButtons.childNodes.forEach(function(el) {
+      if (el.nodeType != 3) {
+        el.classList.remove('disabled');
+      }
+    });
+  }
+</script>
 {% endblock %}

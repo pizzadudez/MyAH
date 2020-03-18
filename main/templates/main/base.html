@@ -3,10 +3,18 @@
 <head>
   <title>MyAh - Django project</title>
 
+  <!-- Google Fonts -->
+  <link
+    href="https://fonts.googleapis.com/css?family=Roboto&display=swap"
+    rel="stylesheet"
+  />
   <!-- Materialize CSS -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+  />
   <!-- My CSS -->
-  <link rel="stylesheet" type="text/css" href="{% static 'main/style.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'main/style.css' %}" />
 
   <!-- Jquery JS-->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
@@ -20,8 +28,6 @@
   {% include 'main/base_navbar.html' %}
 
   <div id="content">
-    {% block content %}
-    {% endblock %}
+    {% block content %} {% endblock %}
   </div>
-  
 </body>

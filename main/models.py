@@ -8,10 +8,10 @@ class SortManager(models.Manager):
 
         all_chunks = super().get_queryset().filter(realm=realm, item_id=item_id)
         if len(all_chunks) == 0:
-            return 999999 # no auctions so put this realm on top
+            return 999999  # no auctions so put this realm on top
 
         total_quantity = all_chunks.aggregate(Sum('quantity'))['quantity__sum']
-        percentage = 0.4 # CHANGEME
+        percentage = 0.4  # CHANGEME
         max_quantity = total_quantity * percentage
         curr_quantity = 0
         mean_numerator = 0
@@ -20,7 +20,7 @@ class SortManager(models.Manager):
             if curr_quantity + chunk.quantity <= max_quantity or curr_quantity == 0:
                 mean_numerator += chunk.quantity * chunk.price
             else:
-                break  
+                break
             curr_quantity += chunk.quantity
 
         return mean_numerator / curr_quantity
@@ -33,7 +33,8 @@ class SortManager(models.Manager):
 
         # seller = Realm.objects.get(name=realm).seller
         # full_name = f"{seller}-{realm.replace(' ', '')}"
-        query = super().get_queryset().filter(realm=realm, item_id=item_id).values_list('price')
+        query = super().get_queryset().filter(
+            realm=realm, item_id=item_id).values_list('price')
         # No chunk posted by seller
         if len(query) < 1:
             return None, None
@@ -43,7 +44,8 @@ class SortManager(models.Manager):
         my_price = price_list[0]
 
         # Count how many auctions are posted for less than my_price
-        query = super().get_queryset().filter(realm=realm, item_id=item_id, price__lt=my_price)
+        query = super().get_queryset().filter(
+            realm=realm, item_id=item_id, price__lt=my_price)
         undercut_count = query.aggregate(Sum('quantity'))['quantity__sum'] or 0
 
         return my_price, undercut_count
@@ -56,7 +58,7 @@ class AuctionChunk(models.Model):
     quantity = models.IntegerField(blank=True, null=True)
     price = models.FloatField(blank=True, null=True)
     stack_size = models.IntegerField(blank=True, null=True)
-    # owner = models.TextField(blank=True, null=True)
+    own = models.BooleanField(blank=True, null=True)
     time_left = models.TextField(blank=True, null=True)
 
     objects = models.Manager()
@@ -76,7 +78,8 @@ class AuctionChunk(models.Model):
 
 class AuctionId(models.Model):
     auc_id = models.IntegerField(blank=True, null=True)
-    chunk = models.ForeignKey(AuctionChunk, models.DO_NOTHING, blank=True, null=True)
+    chunk = models.ForeignKey(
+        AuctionChunk, models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
         managed = False
@@ -120,7 +123,8 @@ class Item(models.Model):
     item_id = models.IntegerField(primary_key=True)
     name = models.TextField(blank=True, null=True)
     short_name = models.TextField(blank=True, null=True)
-    category = models.ForeignKey(ItemCategory, models.DO_NOTHING, blank=True, null=True)
+    category = models.ForeignKey(
+        ItemCategory, models.DO_NOTHING, blank=True, null=True)
     position = models.IntegerField(blank=False, null=False, default=0)
 
     def __str__(self):
@@ -133,7 +137,8 @@ class Item(models.Model):
 class StackSize(models.Model):
     row_id = models.AutoField(primary_key=True)
     stack_size = models.IntegerField()
-    category = models.ForeignKey(ItemCategory, models.DO_NOTHING, blank=True, null=True)
+    category = models.ForeignKey(
+        ItemCategory, models.DO_NOTHING, blank=True, null=True)
 
     def __str__(self):
         return str(self.stack_size)

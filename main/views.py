@@ -8,8 +8,10 @@ import json
 def auctions(request):
     item_category = 3
     # get list of (item_id, name) tuples
-    item_list = Item.objects.filter(category_id=item_category).values_list('item_id', 'name').order_by('position')
-    realms = [x[0] for x in Realm.objects.values_list('name').order_by('position')]
+    item_list = Item.objects.filter(category_id=item_category).values_list(
+        'item_id', 'name').order_by('position')
+    realms = [x[0]
+              for x in Realm.objects.values_list('name').order_by('position')]
 
     auc_data = {}
     realm_order = {}
@@ -17,10 +19,12 @@ def auctions(request):
         item_id = item[0]
         auc_data[item_id] = {}
         realm_order[item_id] = {}
-        realm_order[item_id]['position'] = realms # order based on realm positions in Realm model
+        # order based on realm positions in Realm model
+        realm_order[item_id]['position'] = realms
 
         # create MeanPrice ordered realm list
-        temp_list = [(x, AuctionChunk.sort_values.mean_price(realm=x, item_id=item_id)) for x in realms]
+        temp_list = [(x, AuctionChunk.sort_values.mean_price(
+            realm=x, item_id=item_id)) for x in realms]
         temp_list.sort(key=lambda x: x[1], reverse=True)
         mean_list = [x[0] for x in temp_list]
         realm_order[item_id]['mean_price'] = mean_list
@@ -29,7 +33,8 @@ def auctions(request):
         temp_list = []
         mean_list_rest = []
         for realm in mean_list:
-            my_price, undercut_count = AuctionChunk.sort_values.my_price_and_undercut_count(realm, item_id)
+            my_price, undercut_count = AuctionChunk.sort_values.my_price_and_undercut_count(
+                realm, item_id)
             if my_price:
                 temp_list.append((realm, my_price, undercut_count))
             else:
@@ -38,16 +43,17 @@ def auctions(request):
         # realm_order[item_id]['my_price'] = [x[0] for x in temp_list] + mean_list_rest
         temp_list.sort(key=lambda x: x[2], reverse=True)
         # realm_order[item_id]['undercut_count'] = [x[0] for x in temp_list] + mean_list_rest
-            
+
         # Fetch item data from model
         default_realm_order = realm_order[item_id]['mean_price']
         for realm in default_realm_order:
-            auctions = AuctionChunk.objects.filter(realm=realm, item_id=item_id).values_list('price', 'quantity', 'stack_size')
-            auctions = [(x[0], x[1] * x[2]) for x in auctions]
+            auctions = AuctionChunk.objects.filter(realm=realm, item_id=item_id).values_list(
+                'price', 'quantity', 'stack_size', 'own')
+            auctions = [(x[0], x[1] * x[2] / 1000, x[3]) for x in auctions]
             code = Realm.objects.filter(name=realm).values_list('code')
             # seller = '-'.join([Realm.objects.get(name=realm).seller, realm.replace(' ', '')])
             account = Realm.objects.get(name=realm).account
-            
+
             auc_data[item_id][realm] = (list(auctions), code[0][0], account)
 
     context = {
@@ -57,6 +63,7 @@ def auctions(request):
     }
 
     return render(request, 'main/auctions.html', context=context)
+
 
 def settings(request):
     if request.method == "POST":
@@ -74,23 +81,26 @@ def settings(request):
                 item.position = position
                 item.save()
 
-   
     # Realm names sorted by position field
-    realms = [x[0] for x in Realm.objects.values_list('name').order_by('position')]
+    realms = [x[0]
+              for x in Realm.objects.values_list('name').order_by('position')]
     # Items by category
-    item_categories = [x[0] for x in ItemCategory.objects.values_list('name').order_by('position')]
+    item_categories = [x[0] for x in ItemCategory.objects.values_list(
+        'name').order_by('position')]
     items = {}
     for category in item_categories:
-        item_list = Item.objects.filter(category__name=category).order_by('position')
+        item_list = Item.objects.filter(
+            category__name=category).order_by('position')
         if len(item_list):
             items[category] = item_list
-            
+
     context = {
         'realms': realms,
         'items': items,
     }
 
     return render(request, 'main/settings.html', context=context)
+
 
 def hop_realms(request):
     if request.method == 'POST':
@@ -101,11 +111,13 @@ def hop_realms(request):
                 realm.position = position
                 realm.category = None if category == 'no_category' else category
                 realm.save()
-    
+
     realms = {}
-    categories = [x[0] for x in HopRealm.objects.values_list('category').distinct()]
+    categories = [x[0]
+                  for x in HopRealm.objects.values_list('category').distinct()]
     for category in categories:
-        realm_list = [x[0] for x in HopRealm.objects.filter(category=category).values_list('name').order_by('position')]
+        realm_list = [x[0] for x in HopRealm.objects.filter(
+            category=category).values_list('name').order_by('position')]
         if not category:
             category = 'no_category'
         realms[category] = realm_list
