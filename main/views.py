@@ -50,11 +50,12 @@ def auctions(request):
             auctions = AuctionChunk.objects.filter(realm=realm, item_id=item_id).values_list(
                 'price', 'quantity', 'stack_size', 'own')
             auctions = [(x[0], x[1] * x[2] / 1000, x[3]) for x in auctions]
+            total = sum(x[1] for x in auctions)
             code = Realm.objects.filter(name=realm).values_list('code')
             # seller = '-'.join([Realm.objects.get(name=realm).seller, realm.replace(' ', '')])
             account = Realm.objects.get(name=realm).account
-
-            auc_data[item_id][realm] = (list(auctions), code[0][0], account)
+            auc_data[item_id][realm] = (
+                list(auctions), code[0][0], account, total)
 
     context = {
         'item_list': item_list,

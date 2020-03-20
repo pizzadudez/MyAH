@@ -42,7 +42,7 @@
     <div id="{{ item_id }}" class="col s12">
       {% for realm, realm_data in item_data.items %}
       <div class="row" data-id="{{ realm }}" style="margin-bottom:5px;">
-        <div class="col" style="width:45px;margin-top:16px;">
+        <div class="col" style="width:45px;margin-top:3px;">
           {% if realm_data.2 == 0 %}
           <span style="color:#ffa04d;font-size: 1.4rem;font-weight: 600;">
             {{ realm_data.1 }}
@@ -52,11 +52,14 @@
             {{ realm_data.1 }}
           </span>
           {% endif %}
+          <span style="white-space:nowrap">
+            {{ realm_data.3|floatformat:0 }} K
+          </span>
         </div>
 
         <div class="col">
           <table class="highlight mytable">
-            {% for auc in realm_data.0 %} {% if forloop.counter <= 30 %}
+            {% for auc in realm_data.0 %} {% if forloop.counter <= 26 %}
             <tr
               class="tooltipped"
               data-position="right"
