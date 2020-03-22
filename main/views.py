@@ -40,9 +40,11 @@ def auctions(request):
             else:
                 mean_list_rest.append(realm)
         temp_list.sort(key=lambda x: x[1], reverse=True)
-        # realm_order[item_id]['my_price'] = [x[0] for x in temp_list] + mean_list_rest
+        realm_order[item_id]['my_price'] = [x[0]
+                                            for x in temp_list] + mean_list_rest
         temp_list.sort(key=lambda x: x[2], reverse=True)
-        # realm_order[item_id]['undercut_count'] = [x[0] for x in temp_list] + mean_list_rest
+        realm_order[item_id]['undercut_count'] = [x[0]
+                                                  for x in temp_list] + mean_list_rest
 
         # Fetch item data from model
         default_realm_order = realm_order[item_id]['mean_price']

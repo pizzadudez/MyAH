@@ -47,8 +47,12 @@
           <span style="color:#ffa04d;font-size: 1.4rem;font-weight: 600;">
             {{ realm_data.1 }}
           </span>
-          {% else %}
+          {% elif realm_data.2 == 5 %}
           <span style="color:#5294ff;font-size: 1.4rem;font-weight: 600;">
+            {{ realm_data.1 }}
+          </span>
+          {% else %}
+          <span style="color:#52ffa9;font-size: 1.4rem;font-weight: 600;">
             {{ realm_data.1 }}
           </span>
           {% endif %}

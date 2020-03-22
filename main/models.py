@@ -10,18 +10,19 @@ class SortManager(models.Manager):
         if len(all_chunks) == 0:
             return 999999  # no auctions so put this realm on top
 
-        total_quantity = all_chunks.aggregate(Sum('quantity'))['quantity__sum']
-        percentage = 0.4  # CHANGEME
+        total_quantity = all_chunks.aggregate(Sum('stack_size'))[
+            'stack_size__sum']
+        percentage = 0.45  # CHANGEME
         max_quantity = total_quantity * percentage
         curr_quantity = 0
         mean_numerator = 0
 
         for chunk in all_chunks:
-            if curr_quantity + chunk.quantity <= max_quantity or curr_quantity == 0:
-                mean_numerator += chunk.quantity * chunk.price
+            if curr_quantity + chunk.stack_size <= max_quantity or curr_quantity == 0:
+                mean_numerator += chunk.stack_size * chunk.price
             else:
                 break
-            curr_quantity += chunk.quantity
+            curr_quantity += chunk.stack_size
 
         return mean_numerator / curr_quantity
 
@@ -30,6 +31,22 @@ class SortManager(models.Manager):
         how many auctions are posted for less (undercut). Returns None if no
         auctions are posted by the seller.
         """
+
+        auctions = super().get_queryset().filter(
+            realm=realm, item_id=item_id).values_list('price', 'stack_size', 'own')
+
+        undercut_count = 0
+        my_price = None
+        for auc in auctions:
+            if auc[2]:
+                my_price = auc[0]
+                break
+            else:
+                undercut_count += auc[1]
+
+        if not my_price:
+            return None, None
+        return my_price, undercut_count
 
         # seller = Realm.objects.get(name=realm).seller
         # full_name = f"{seller}-{realm.replace(' ', '')}"
